@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Banking</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- GATEWAY 1: LOGIN ACCESS SCREEN -->
+    <div id="authViewport" class="auth-viewport">
+        <div class="auth-layout" style="display: flex; flex-direction: column; height: 10vh;">
+            <header class="dash-header">
+                <div class="brand-logo">
+                    <img src="logo.png" alt="UniCredit Logo" class="site-logo" style="height: 110px; width: auto;">
+                </div>
+                <div class="secure-tag">🔒 256-Bit TLS Institutional Node</div>
+            </header>
+            
+            <div class="auth-split-workspace" style="display: flex; flex-grow: 1;">
+                <div class="auth-promo-panel">
+                    <div class="promo-image-overlay"></div>
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80" alt="Terminal UI" class="promo-media-element">
+                    <div class="promo-content-wrapper">
+                        <h2>Unicredit Private Banking Vault</h2>
+                        <p>Global clearings, multi-currency settlements and personalized yields in one private banking solution.</p>
+                    </div>
+                </div>
+                
+                <div class="auth-action-panel">
+                    <div class="form-title-area">
+                        <h1>Clearance Gateway</h1>
+                        <p>Please present credentials to initialize data vault communication channels.</p>
+                    </div>
+                    
+                    <form id="customLoginForm" autocomplete="off">
+                        <div class="input-group">
+                            <label for="vaultUser">Corporate ID / Username</label>
+                            <input type="text" id="vaultUser" required autocomplete="new-password" placeholder="Enter corporate identifier">
+                        </div>
+                        <div class="input-group">
+                            <label for="vaultPass">Security Token / Password</label>
+                            <input type="password" id="vaultPass" required autocomplete="new-password" placeholder="••••••••••">
+                        </div>
+                        <div class="auth-options">
+                            <label class="remember-me"><input type="checkbox"> Trust workstation node</label>
+                            <a href="#" class="forgot-link" onclick="alert('Contact system clearance admin.')">Forgot token?</a>
+                        </div>
+                        <button type="submit" class="btn-auth">Verify Identity & Initialize</button>
+                    </form>
+                    
+                    <div id="authError" class="auth-error-banner" style="display: none;">
+                        <span>❌</span>
+                        <div>
+                            <strong>Authentication Rejected</strong>
+                            <p>The token combination provided does not match records within this clearance node.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GATEWAY 2: SECURE DASHBOARD -->
+    <div id="appViewport" class="app-viewport">
+        <header class="dash-header">
+            <div class="brand-logo">
+                <img src="logo.png" alt="UniCredit Logo" class="site-logo" style="height: 110px; width: auto;">
+            </div>
+
+            <div class="header-action-group">
+                <div class="node-status">Session: <span id="headerStatus" class="status-active">Active</span></div>
+                <button id="btnSignOut" class="btn-secondary btn-signout-custom">Sign Out</button>
+            </div>
+        </header>
+        
+        <!-- SYSTEM ALERT NOTIFICATION BANNER -->
+        <div id="portalNotification" class="portal-notification" style="display: none;">
+            <div class="notification-content">
+                <strong>CRITICAL ALERT: Transaction Execution Reversed</strong>
+                <p id="notificationText">Your recent transfer failed during secondary settlement verification. The account has been placed ON HOLD. Restricted features are temporarily disabled.</p>
+            </div>
+            <button class="btn-close-notify" onclick="dismissNotification()">Acknowledge</button>
+        </div>
+
+        <div class="dash-container">
+            <!-- SIDEBAR -->
+            <aside class="dash-sidebar">
+                <div class="sidebar-section-title">Core Banking</div>
+                <div id="navOverview" class="nav-item active">Account Summary</div>
+                <div id="navClearing" class="nav-item">Transfer Funds</div>
+                <div id="navStatements" class="nav-item">e-Statements & Reports</div>
+                
+                <div class="sidebar-section-title">Treasury Tools</div>
+                <div id="navFX" class="nav-item">Foreign Exchange Desk</div>
+                <div id="navCards" class="nav-item">Commercial Card Hub</div>
+                
+                <div class="sidebar-section-title">Security & Audit</div>
+                <div id="navLogs" class="nav-item">Node Logs</div>
+                <div id="navSettings" class="nav-item">Node Configurations</div>
+            </aside>
+            
+            <!-- MAIN DISPLAY INTERFACE -->
+            <main class="dash-main">
+                
+                <!-- PANEL 1: ACCOUNT SUMMARY -->
+                <div id="panelOverview" class="dash-panel">
+                    
+                    <div class="header-system-meta-container" style="margin-bottom: 15px;">
+                        <div class="header-system-meta">
+                            <div class="meta-item">
+                                <span class="meta-label-lbl">Last Login Date:</span> 
+                                <span id="headerSystemDate">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bankWelcomeSection" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                        <h2 id="welcomeMsgTitle" style="font-size: 1.25rem; color: #fff; margin-bottom: 8px;">Welcome back, Thomas Muller.</h2>
+                        <div style="font-size: 0.85rem; color: #38BDF8; font-weight: 500;">🔔 Security Notice: 256-bit institutional encryption active. No unauthorized session interruptions reported.</div>
+                    </div>
+
+                    <div class="panel-header-flex">
+                        <h1 class="panel-title">Account Summary</h1>
+                        <span class="currency-badge">Primary Currency: EUR (€)</span>
+                    </div>
+
+                    <div class="account-meta-grid">
+                        <div class="meta-card">
+                            <span class="meta-label">Account Name</span>
+                            <span class="meta-value">Thomas Muller</span>
+                        </div>
+                        <div class="meta-card">
+                            <span class="meta-label">Account Number</span>
+                            <span class="meta-value">DE89 **** **** **** 4555 30</span>
+                        </div>
+                        <div class="meta-card">
+                            <span class="meta-label">Account Type</span>
+                            <span class="meta-value">Private Current Account</span>
+                        </div>
+                        <div class="meta-card">
+                            <span class="meta-label">System Status</span>
+                            <span id="systemStatusBadge" class="meta-value status-active-text">ACTIVE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="balance-hero-card">
+                        <div class="balance-left">
+                            <span class="balance-label">Account Balance</span>
+                            <h2 class="balance-amount" id="balanceDisplay">€2,670,000.00</h2>
+                        </div>
+                        <div id="holdAlertBox" class="hold-mini-alert status-ok">
+                            <strong id="holdAlertTitle">🟢 Account Operational</strong>
+                            <p id="holdAlertBody">All outbound routing pathways and transaction nodes are fully operational.</p>
+                        </div>
+                    </div>
+
+                    <!-- SETTLEMENT TREND CHART BLOCK -->
+                    <div class="chart-container-wrapper">
+                        <div class="chart-header-flex">
+                            <h3>Settlement Trend</h3>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-box credit"></span> Credit (Incoming)</span>
+                                <span class="legend-item"><span class="legend-box debit"></span> Debit (Outgoing)</span>
+                            </div>
+                        </div>
+                        <div class="mock-chart-graphic"></div>
+                    </div>
+
+                    <div class="ledger-wrapper">
+                        <h3>Recent Transactions</h3>
+                        <table class="ledger-table">
+                            <thead>
+                                <tr>
+                                    <th>Value Date</th>
+                                    <th>Reference ID</th>
+                                    <th>Description / Counterparty</th>
+                                    <th>Routing Chain</th>
+                                    <th>Amount (EUR)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledgerTbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PANEL 2: TRANSFER FUNDS -->
+                <div id="panelClearing" class="dash-panel" style="display: none;">
+                    <h1 class="panel-title">Transfer Funds</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Initiate a domestic or international money transfer instantly below.</p>
+                    
+                    <div class="form-container">
+                        <form id="wireTransferForm">
+                            <div class="input-group">
+                                <label>Recipient Name</label>
+                                <input type="text" id="wireRecipientName" placeholder="Enter recipient or beneficiary name">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Bank Name</label>
+                                    <input type="text" id="wireBank" required placeholder="e.g. UniCredit SpA">
+                                </div>
+                                <div class="input-group">
+                                    <label>Routing Transit Number / SWIFT BIC</label>
+                                    <input type="text" id="wireRouting" required placeholder="9-digit code or SWIFT key">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Beneficiary Account Number / IBAN</label>
+                                <input type="text" id="wireAccount" required placeholder="Enter destination account string">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Transfer Amount (EUR)</label>
+                                    <input type="number" id="wireAmount" required min="1" placeholder="0.00">
+                                </div>
+                                <div class="input-group">
+                                    <label>Processing Speed Priority</label>
+                                    <select id="wirePriority">
+                                        <option value="Standard Settlement">Standard Settlement</option>
+                                        <option value="Real-time Processing">Real-time Processing</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Transaction Reference / Description</label>
+                                <input type="text" id="wireReference" placeholder="e.g. Invoice Payment / Invoice #1024">
+                            </div>
+                            
+                            <button type="submit" id="btnTransferSubmit" class="btn-transfer">Authorize Outbound Remittance</button>
+                        </form>
+                    </div>
+
+                    <div id="transferRejectionBox" class="rejection-box" style="display: none;">
+                        <h3>Transaction Routing Exception</h3>
+                        <p>The transmission payload was aborted. <strong>Error Code: ERR_NODE_HOLD_RESTRICTION</strong>. The outbound pipeline rejected the transfer because this account node is currently flagged as <strong>ON HOLD</strong>.</p>
+                    </div>
+                </div>
+
+                <!-- PANEL 3: e-STATEMENTS -->
+                <div id="panelStatements" class="dash-panel" style="display: none;">
+                    <h1 class="panel-title">e-Statements & Financial Reports</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Download official institutional audit trail documents.</p>
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <div class="doc-icon">📄</div>
+                            <h3>Q2 2026 Audit Statement</h3>
+                            <p>Generated: July 01, 2026 • PDF (2.4 MB)</p>
+                            <button class="btn-secondary">Download Report</button>
+                        </div>
+                        <div class="report-card">
+                            <div class="doc-icon">📄</div>
+                            <h3>Annual Tax Assessment 2025</h3>
+                            <p>Generated: Jan 15, 2026 • PDF (5.1 MB)</p>
+                            <button class="btn-secondary">Download Report</button>
+                        </div>
+                        <div class="report-card">
+                            <div class="doc-icon">📊</div>
+                            <h3>Corporate Settlement Ledger Q1</h3>
+                            <p>Generated: Apr 02, 2026 • CSV (1.1 MB)</p>
+                            <button class="btn-secondary">Download Report</button>
+                        </div>
+                        <div class="report-card">
+                            <div class="doc-icon">🧾</div>
+                            <h3>Treasury Yield Summary 2025</h3>
+                            <p>Generated: Dec 31, 2025 • PDF (3.8 MB)</p>
+                            <button class="btn-secondary">Download Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 4: FX -->
+                <div id="panelFX" class="dash-panel" style="display: none;">
+                    <h1 class="panel-title">Foreign Exchange Desk</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Live institutional FX liquidity pools and spot currency conversion.</p>
+                    <div class="fx-rates-grid">
+                        <div class="fx-card">
+                            <span class="fx-pair">EUR / USD</span>
+                            <span class="fx-rate">1.0894</span>
+                            <span class="fx-change pos">+0.12%</span>
+                        </div>
+                        <div class="fx-card">
+                            <span class="fx-pair">EUR / GBP</span>
+                            <span class="fx-rate">0.8432</span>
+                            <span class="fx-change neg">-0.05%</span>
+                        </div>
+                        <div class="fx-card">
+                            <span class="fx-pair">EUR / JPY</span>
+                            <span class="fx-rate">172.45</span>
+                            <span class="fx-change pos">+0.48%</span>
+                        </div>
+                        <div class="fx-card">
+                            <span class="fx-pair">EUR / CHF</span>
+                            <span class="fx-rate">0.9512</span>
+                            <span class="fx-change pos">+0.03%</span>
+                        </div>
+                        <div class="fx-card">
+                            <span class="fx-pair">EUR / CAD</span>
+                            <span class="fx-rate">1.4910</span>
+                            <span class="fx-change neg">-0.18%</span>
+                        </div>
+                        <div class="fx-card">
+                            <span class="fx-pair">EUR / AUD</span>
+                            <span class="fx-rate">1.6340</span>
+                            <span class="fx-change pos">+0.22%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 5: CARDS -->
+                <div id="panelCards" class="dash-panel" style="display: none;">
+                    <h1 class="panel-title">Commercial Card Hub</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Manage corporate physical and virtual cards.</p>
+                    
+                    <div class="cards-wrapper">
+                        <div class="blue-commercial-card">
+                            <div class="card-top">
+                                <span class="card-brand-title">UniCredit Private</span>
+                                <span class="card-chip-symbol">💳</span>
+                            </div>
+                            <div class="card-number-display">
+                                DE89 **** **** **** 4555 30
+                            </div>
+                            <div class="card-info-footer">
+                                <div>
+                                    <div class="card-sub-label">CARD HOLDER</div>
+                                    <div class="card-sub-val">THOMAS MULLER</div>
+                                </div>
+                                <div>
+                                    <div class="card-sub-label">EXPIRES</div>
+                                    <div class="card-sub-val">08/28</div>
+                                </div>
+                                <div>
+                                    <div class="card-sub-label">MONTHLY LIMIT</div>
+                                    <div class="card-sub-val">€50,000</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-actions-grid">
+                            <div class="meta-card">
+                                <span class="meta-label">Linked Account</span>
+                                <span class="meta-value">DE89 7002 0270 0012 4555 30</span>
+                            </div>
+                            <div class="meta-card">
+                                <span class="meta-label">Card Status</span>
+                                <span class="meta-value status-active-text">ACTIVE / UNLOCKED</span>
+                            </div>
+                            <div class="meta-card">
+                                <span class="meta-label">Available Credit Limit</span>
+                                <span class="meta-value">€48,200.00 / €50,000.00</span>
+                            </div>
+                            <div class="meta-card">
+                                <span class="meta-label">Security Protocol</span>
+                                <span class="meta-value">3D Secure v2 Enabled</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 6: LOGS -->
+                <div id="panelLogs" class="dash-panel" style="display: none;">
+                    <h1 class="panel-title">System Node Activity Logs</h1>
+                    <div class="logs-console">
+                        <div class="log-entry">[SYSTEM] Initializing UniCredit secure handshake connection...</div>
+                        <div class="log-entry">[SYSTEM] Global network shards synchronized successfully.</div>
+                        <div class="log-entry" style="color: var(--success);">[STATUS] Node status profile: ACTIVE. All liquidity pools online.</div>
+                        <div id="dynamicLogHook"></div>
+                    </div>
+                </div>
+
+                <!-- PANEL 7: CONFIGURATIONS -->
+                <div id="panelSettings" class="dash-panel" style="display: none;">
+                    <h1 class="panel-title">Node Configurations</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Adjust network routing preferences and API key permissions.</p>
+                    <div class="form-container">
+                        <div class="input-group">
+                            <label>API Key Clearance Identifier</label>
+                            <input type="text" value="UNC_LIVE_88301928471" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Default Clearance Priority</label>
+                            <select disabled>
+                                <option>RTGS Instant Settlement System</option>
+                            </select>
+                        </div>
+
+                        <!-- ADMINISTRATIVE VAULT CONTROLS: SSTA CONTROL -->
+                        <div id="developerConsoleSection" style="margin-top: 40px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: none;">
+                            <h3 style="color: #F87171; margin-bottom: 15px;">⚠️ Administrative Vault Controls</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Manage node clearance state and data restoration.</p>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">SSTA Account Status Control</label>
+                                <button type="button" id="btnToggleAccountStatus" class="btn-secondary" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); color: #38BDF8; font-weight: 600;">SSTA Control</button>
+                            </div>
+
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <button type="button" id="btnDevReset" class="btn-secondary" style="background: rgba(211, 16, 39, 0.15); border-color: rgba(211, 16, 39, 0.4); color: #F87171; font-weight: 600;">Purge</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DISTINCT FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content-inner">
+                        <p>© 2026 UniCredit S.p.A.</p>
+                        <p class="footer-links-row">
+                            <a href="privacy.html">Privacy Policy</a> | 
+                            <a href="terms.html">Terms</a> | 
+                            <a href="security.html">Security</a> | 
+                            <a href="contact.html">Contact</a> | 
+                            <a href="support.html">Support</a>
+                        </p>
+                        <p class="footer-sub-text">Regulated by ECB | For Authorized Users Only | <a href="advisor.html">Message Your Advisor</a></p>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL: TRANSACTION PROCESSING NOTIFICATION SCREEN -->
+    <div id="successModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card excited-modal" style="text-align: center; padding: 40px; background: #121824; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; max-width: 500px; width: 90%; color: #fff;">
+            
+            <div class="avatar-3d-scene" style="margin-bottom: 20px;">
+                <div class="hourglass" style="font-size: 3.5rem; display: flex; justify-content: center; align-items: center; animation: pulse 1.5s infinite;">⏳</div>
+            </div>
+            
+            <h2 style="margin-bottom: 10px; font-size: 1.5rem;">Outbound Remittance Processing</h2>
+            <p class="success-subtitle" style="color: #94A3B8; font-size: 0.95rem; margin-bottom: 25px;">
+                Your wire transfer payload has been successfully dispatched to the central bank clearing network. Secondary cryptographic verification is underway.
+            </p>
+            
+            <div class="timer-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <span class="timer-label" style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; margin-bottom: 5px;">Time Elapsed Since Settlement Request</span>
+                <div class="timer-display" id="liveTimerDisplay" style="font-family: monospace; font-size: 1.8rem; font-weight: 700; color: #38BDF8;">00:00:00</div>
+                <span class="timer-footnote" style="display: block; font-size: 0.75rem; color: #64748B; margin-top: 5px;">Estimated Clearing Window: 04:00:00 Max</span>
+            </div>
+
+            <button class="btn-auth" onclick="closeSuccessModal()" style="background: #D31027; color: white; border: none; padding: 12px 20px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%;">Return to Ledger Summary</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT HANDLING PIN PROMPTS & CORE APPLICATION LOGIC WITH BACKEND INTEGRATION -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const reportButtons = document.querySelectorAll("#panelStatements .report-card button");
+            
+            reportButtons.forEach(button => {
+                button.removeAttribute("onclick");
+                
+                button.addEventListener("click", function() {
+                    const cardTitle = this.parentElement.querySelector("h3").innerText;
+                    const userPin = prompt(`Security Clearance Required: Enter special PIN to download audit trail (${cardTitle}):`);
+                    
+                    if (userPin !== null) {
+                        if (userPin.trim() !== "") {
+                            alert(`Special PIN accepted. Downloading ${cardTitle}...`);
+                        } else {
+                            alert("Download aborted: PIN cannot be empty.");
+                        }
+                    } else {
+                        alert("Download cancelled.");
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        // --- GOOGLE APPS SCRIPT BACKEND CONFIGURATION ---
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHEtljNTHRJdQroB6u-T97oag9dMnwxJVObJ6Swb_AnWd2ddSbRKI_GWq24Urd9YJHrQ/exec";
+
+        let backendTransactions = [];
+        let backendBalance = 2670000.00;
+        let backendAccountStatus = "Active";
+        let isUpdatingStatus = false; // Guard flag against async polling race conditions
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginForm = document.getElementById("customLoginForm");
+            const authViewport = document.getElementById("authViewport");
+            const appViewport = document.getElementById("appViewport");
+            const authError = document.getElementById("authError");
+            const signOutBtn = document.getElementById("btnSignOut");
+
+            const VALID_USER = "Thomas301";
+            const VALID_PASS = "T@Muller1";
+            const DEVELOPER_ROLE_KEY = "UNC_DEV_AUTH_PASSTHRU";
+
+            if (localStorage.getItem("uc_session_active") === "true") {
+                if (authViewport) authViewport.style.display = "none";
+                if (appViewport) appViewport.style.display = "flex";
+                fetchBackendState().then(() => {
+                    renderApplicationState();
+                });
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    const usernameInput = document.getElementById("vaultUser").value.trim();
+                    const passwordInput = document.getElementById("vaultPass").value;
+
+                    if (usernameInput === VALID_USER && passwordInput === VALID_PASS) {
+                        authError.style.display = "none";
+                        authViewport.style.display = "none";
+                        appViewport.style.display = "flex";
+                        localStorage.setItem("uc_session_active", "true");
+                        localStorage.setItem(DEVELOPER_ROLE_KEY, "true");
+                        
+                        const currentLoginTime = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Berlin', weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        localStorage.setItem("uc_last_login", currentLoginTime);
+
+                        appendLog(`[AUTH] Clearance granted for corporate identifier: ${VALID_USER}`);
+                        fetchBackendState().then(() => {
+                            renderApplicationState();
+                        });
+                    } else {
+                        authError.style.display = "flex";
+                        appendLog(`[SECURITY] Authentication failed for user string: ${usernameInput}`);
+                    }
+                });
+            }
+
+            if (signOutBtn) {
+                signOutBtn.addEventListener("click", function () {
+                    localStorage.removeItem("uc_session_active");
+                    localStorage.removeItem(DEVELOPER_ROLE_KEY);
+                    appViewport.style.display = "none";
+                    authViewport.style.display = "flex";
+                    document.getElementById("vaultUser").value = "";
+                    document.getElementById("vaultPass").value = "";
+                });
+            }
+
+            const navItems = {
+                navOverview: "panelOverview",
+                navClearing: "panelClearing",
+                navStatements: "panelStatements",
+                navFX: "panelFX",
+                navCards: "panelCards",
+                navLogs: "panelLogs",
+                navSettings: "panelSettings"
+            };
+
+            Object.keys(navItems).forEach(navId => {
+                const item = document.getElementById(navId);
+                if (item) {
+                    item.addEventListener("click", function () {
+                        document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+                        this.classList.add("active");
+                        document.querySelectorAll(".dash-panel").forEach(panel => panel.style.display = "none");
+                        const targetPanel = document.getElementById(navItems[navId]);
+                        if (targetPanel) targetPanel.style.display = "block";
+                    });
+                }
+            });
+
+            const wireForm = document.getElementById("wireTransferForm");
+            if (wireForm) {
+                wireForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    const bank = document.getElementById("wireBank").value;
+                    const amount = parseFloat(document.getElementById("wireAmount").value);
+                    const reference = document.getElementById("wireReference").value || "Outbound Wire Transfer";
+                    const routing = document.getElementById("wireRouting").value;
+                    const priorityOption = document.getElementById("wirePriority").value;
+
+                    if (isNaN(amount) || amount <= 0) {
+                        alert("Please enter a valid transfer amount.");
+                        return;
+                    }
+
+                    const serverTimestamp = Date.now();
+                    const dateString = new Date(serverTimestamp).toISOString().split('T')[0];
+                    
+                    const sourceText = (reference || bank || "").trim();
+                    let cleanSource = sourceText.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+                    let prefix = cleanSource.substring(0, 4);
+                    while (prefix.length < 4) {
+                        prefix += "X";
+                    }
+
+                    const randomPartLength = 17 - prefix.length;
+                    let randomSuffix = "";
+                    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                    for (let i = 0; i < randomPartLength; i++) {
+                        randomSuffix += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+
+                    const refId = prefix + randomSuffix;
+                    const initialStatus = backendAccountStatus === "On Hold" ? "Failed" : "Processing";
+
+                    const newTransaction = {
+                        id: refId,
+                        date: dateString,
+                        timestamp: serverTimestamp,
+                        description: `${reference} / ${bank} (${priorityOption})`,
+                        routing: `SWIFT/RTGS (${routing})`,
+                        amount: -amount,
+                        type: "debit",
+                        status: initialStatus,
+                        isUserCreated: true
+                    };
+
+                    sendTransactionToBackend(newTransaction);
+                    wireForm.reset();
+                    openSuccessModal();
+                });
+            }
+
+            const btnDevReset = document.getElementById("btnDevReset");
+            if (btnDevReset) {
+                btnDevReset.addEventListener("click", function () {
+                    executeBackendDeveloperReset();
+                });
+            }
+
+            const btnToggleAccountStatus = document.getElementById("btnToggleAccountStatus");
+            if (btnToggleAccountStatus) {
+                btnToggleAccountStatus.addEventListener("click", function () {
+                    if (!verifyBackendAdminAuthorization()) {
+                        alert("ACCESS DENIED: Administrative permissions required.");
+                        return;
+                    }
+                    const newStatus = backendAccountStatus === "Active" ? "On Hold" : "Active";
+                    updateAccountStatusInBackend(newStatus);
+                });
+            }
+
+            // Real-time synchronization polling every 5 seconds with backend sheet data
+            setInterval(() => {
+                if (localStorage.getItem("uc_session_active") === "true") {
+                    fetchBackendState();
+                }
+            }, 5000);
+
+            // 4-hour automatic evaluation logic disabled/removed per instructions.
+        });
+
+        async function fetchBackendState() {
+            if (isUpdatingStatus) return; // Ignore background fetches while a status toggle is in-flight
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "getTransactions" })
+                });
+                const data = await response.json();
+                if (data && data.success && !isUpdatingStatus) {
+                    backendAccountStatus = data.accountStatus || "Active";
+                    backendTransactions = (data.transactions || []).map(tx => {
+                        return tx;
+                    });
+                    backendBalance = parseFloat(data.balance) || 2670000.00;
+                    
+                    localStorage.setItem("uc_account_status", backendAccountStatus);
+                    renderApplicationState();
+                }
+            } catch (err) {
+                console.error("Failed to fetch state from Google Sheets backend:", err);
+            }
+        }
+
+        async function sendTransactionToBackend(tx) {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "addTransaction", transaction: tx })
+                });
+                const data = await response.json();
+                if (data && data.success) {
+                    backendAccountStatus = data.accountStatus || backendAccountStatus;
+                    backendTransactions = (data.transactions || []).map(t => {
+                        return t;
+                    });
+                    backendBalance = parseFloat(data.balance) || backendBalance;
+                    
+                    localStorage.setItem("uc_account_status", backendAccountStatus);
+                    appendLog(`[DATABASE] Transaction ${tx.id} saved to Google Sheets. Status: ${tx.status}.`);
+                    renderApplicationState();
+                } else {
+                    alert("Transaction error: " + (data.error || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("Failed to send transaction:", err);
+                alert("Network error while communicating with backend.");
+            }
+        }
+
+        async function updateAccountStatusInBackend(newStatus) {
+            if (isUpdatingStatus) return;
+            isUpdatingStatus = true;
+
+            try {
+                // 1. Optimistic Local State Update to ensure immediate smooth response
+                backendAccountStatus = newStatus;
+
+                localStorage.setItem("uc_account_status", backendAccountStatus);
+                renderApplicationState();
+
+                // 2. Dispatch Backend Request
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "updateAccountStatus", status: newStatus })
+                });
+                const data = await response.json();
+                if (data && data.success) {
+                    backendAccountStatus = data.accountStatus || newStatus;
+                    backendTransactions = (data.transactions || []).map(tx => {
+                        return tx;
+                    });
+                    backendBalance = parseFloat(data.balance) || backendBalance;
+                    
+                    localStorage.setItem("uc_account_status", backendAccountStatus);
+                    appendLog(`[AUDIT] SSTA account status updated to: ${backendAccountStatus}`);
+                    renderApplicationState();
+                }
+            } catch (err) {
+                console.error("Failed to update account status:", err);
+            } finally {
+                isUpdatingStatus = false;
+            }
+        }
+
+        async function executeBackendDeveloperReset() {
+            if (!verifyBackendAdminAuthorization()) {
+                alert("ACCESS DENIED: Backend security policy prohibits unauthorized reset invocation.");
+                appendLog(`[SECURITY] Unauthorized reset attempt blocked by backend authorization guard.`);
+                return;
+            }
+
+            if (confirm("Developer Reset Protocol: This will purge all records in Google Sheets, restore default demo data, and recalibrate system states. Proceed?")) {
+                try {
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: "POST",
+                        mode: "cors",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({ action: "resetData" })
+                    });
+                    const data = await response.json();
+                    if (data && data.success) {
+                        backendTransactions = data.transactions || [];
+                        backendBalance = parseFloat(data.balance) || 2670000.00;
+                        backendAccountStatus = data.accountStatus || "Active";
+                        
+                        localStorage.setItem("uc_account_status", backendAccountStatus);
+                        appendLog(`[AUDIT] Developer Reset executed successfully. Google Sheets restored to initial state.`);
+                        alert("Application successfully reset to base demonstration deployment.");
+                        renderApplicationState();
+                    }
+                } catch (err) {
+                    console.error("Failed to reset backend data:", err);
+                }
+            }
+        }
+
+        function renderApplicationState() {
+            renderAccountBalance();
+            renderTransactionLedger();
+            renderAnalyticsAndGraphs();
+            renderAccountStatusDisplay();
+            enforceBackendAuthorization();
+            updateLastLoginDisplay();
+        }
+
+        function renderAccountBalance() {
+            const balanceElem = document.getElementById("balanceDisplay");
+            if (balanceElem) {
+                balanceElem.textContent = "€" + backendBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        }
+
+        function renderAccountStatusDisplay() {
+            const accountStatus = backendAccountStatus || "Active";
+            const systemStatusBadge = document.getElementById("systemStatusBadge");
+            const headerStatus = document.getElementById("headerStatus");
+            const holdAlertBox = document.getElementById("holdAlertBox");
+            const holdAlertTitle = document.getElementById("holdAlertTitle");
+            const holdAlertBody = document.getElementById("holdAlertBody");
+            const btnToggleAccountStatus = document.getElementById("btnToggleAccountStatus");
+
+            // System Status Badge Formatting
+            if (systemStatusBadge) {
+                if (accountStatus === "On Hold") {
+                    systemStatusBadge.textContent = "ON HOLD";
+                    systemStatusBadge.className = "meta-value status-hold-text";
+                    systemStatusBadge.style.color = "#EAB308"; // Yellow
+                } else {
+                    systemStatusBadge.textContent = "ACTIVE";
+                    systemStatusBadge.className = "meta-value status-active-text";
+                    systemStatusBadge.style.color = "#22C55E"; // Green
+                }
+            }
+
+            // Header Session Status Formatting
+            if (headerStatus) {
+                if (accountStatus === "On Hold") {
+                    headerStatus.textContent = "On Hold";
+                    headerStatus.style.color = "#EAB308"; // Yellow
+                } else {
+                    headerStatus.textContent = "Active";
+                    headerStatus.style.color = "#22C55E"; // Green
+                }
+            }
+
+            // Alert Box Formatting
+            if (holdAlertBox && holdAlertTitle && holdAlertBody) {
+                if (accountStatus === "On Hold") {
+                    holdAlertBox.className = "hold-mini-alert status-warn";
+                    holdAlertBox.style.borderColor = "rgba(234, 179, 8, 0.4)";
+                    holdAlertBox.style.background = "rgba(234, 179, 8, 0.08)";
+                    holdAlertTitle.textContent = "⚠️ Account Status: On Hold";
+                    holdAlertTitle.style.color = "#EAB308";
+                    holdAlertBody.textContent = "Your account has been placed on hold by explicit user selection. It will remain in this state until explicitly switched back.";
+                } else {
+                    holdAlertBox.className = "hold-mini-alert status-ok";
+                    holdAlertBox.style.borderColor = "";
+                    holdAlertBox.style.background = "";
+                    holdAlertTitle.textContent = "🟢 Account Operational";
+                    holdAlertTitle.style.color = "#22C55E";
+                    holdAlertBody.textContent = "All outbound routing pathways and transaction nodes are fully operational.";
+                }
+            }
+
+            // SSTA Control Button Toggle Label Formatting
+            if (btnToggleAccountStatus) {
+                if (accountStatus === "Active") {
+                    btnToggleAccountStatus.textContent = "SSTOH — Switch to OH";
+                    btnToggleAccountStatus.style.background = "rgba(234, 179, 8, 0.15)";
+                    btnToggleAccountStatus.style.borderColor = "rgba(234, 179, 8, 0.4)";
+                    btnToggleAccountStatus.style.color = "#EAB308";
+                } else {
+                    btnToggleAccountStatus.textContent = "SSTA — Switch to AC";
+                    btnToggleAccountStatus.style.background = "rgba(34, 197, 94, 0.15)";
+                    btnToggleAccountStatus.style.borderColor = "rgba(34, 197, 94, 0.4)";
+                    btnToggleAccountStatus.style.color = "#22C55E";
+                }
+            }
+        }
+
+        function renderTransactionLedger() {
+            const tbody = document.getElementById("ledgerTbody");
+            if (!tbody) return;
+
+            let transactions = [...backendTransactions];
+            transactions.sort((a, b) => b.timestamp - a.timestamp);
+
+            tbody.innerHTML = "";
+            transactions.forEach(tx => {
+                const tr = document.createElement("tr");
+
+                let displayStatus = tx.status;
+
+                let badgeClass = "badge-success";
+                if (displayStatus === "Processing") badgeClass = "badge-processing";
+                if (displayStatus === "Failed") badgeClass = "badge-error";
+
+                let amountClass = tx.amount >= 0 ? "amt-credit" : "amt-debit";
+                let formattedAmount = (tx.amount >= 0 ? "+" : "") + "€" + Math.abs(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                tr.innerHTML = `
+                    <td>${tx.date}</td>
+                    <td><code>${tx.id}</code></td>
+                    <td>${tx.description}</td>
+                    <td>${tx.routing}</td>
+                    <td class="${amountClass}">${formattedAmount}</td>
+                    <td><span class="${badgeClass}">${displayStatus}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderAnalyticsAndGraphs() {
+            const chartGraphic = document.querySelector(".mock-chart-graphic");
+            if (!chartGraphic) return;
+
+            let transactions = [...backendTransactions];
+            transactions.sort((a, b) => a.timestamp - b.timestamp);
+
+            chartGraphic.innerHTML = "";
+            transactions.forEach(tx => {
+                const bar = document.createElement("div");
+                bar.className = `chart-bar ${tx.amount >= 0 ? 'bar-credit' : 'bar-debit'}`;
+                
+                const absVal = Math.abs(tx.amount);
+                const heightPct = Math.min(Math.max((absVal / 500000) * 100, 5), 100);
+                bar.style.height = `${heightPct}%`;
+                
+                let displayStatus = tx.status;
+
+                let txDateObj;
+                if (typeof tx.date === "string" && tx.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    const parts = tx.date.split("-");
+                    txDateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                } else {
+                    txDateObj = new Date(tx.timestamp);
+                }
+                if (isNaN(txDateObj.getTime())) {
+                    txDateObj = new Date(tx.timestamp);
+                }
+                const shortDate = txDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+                bar.title = `${tx.type.toUpperCase()}: €${absVal.toLocaleString()} (${displayStatus})`;
+                bar.innerHTML = `<span class="bar-date">${shortDate}</span>`;
+                
+                chartGraphic.appendChild(bar);
+            });
+        }
+
+        function verifyBackendAdminAuthorization() {
+            const isSessionActive = localStorage.getItem("uc_session_active") === "true";
+            const hasDevPassthru = localStorage.getItem("UNC_DEV_AUTH_PASSTHRU") === "true";
+            return isSessionActive && hasDevPassthru;
+        }
+
+        function enforceBackendAuthorization() {
+            const devSection = document.getElementById("developerConsoleSection");
+            if (devSection) {
+                if (verifyBackendAdminAuthorization()) {
+                    devSection.style.display = "block";
+                } else {
+                    devSection.style.display = "none";
+                }
+            }
+        }
+
+        function updateLastLoginDisplay() {
+            const headerSystemDateElem = document.getElementById("headerSystemDate");
+            const lastLoginTime = localStorage.getItem("uc_last_login") || new Date().toLocaleString('en-GB', { timeZone: 'Europe/Berlin', weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            if (headerSystemDateElem) {
+                headerSystemDateElem.textContent = lastLoginTime;
+            }
+        }
+
+        function showPortalNotification(messageText) {
+            const banner = document.getElementById("portalNotification");
+            const textElem = document.getElementById("notificationText");
+            if (banner && textElem) {
+                textElem.innerText = messageText;
+                banner.style.display = "flex";
+            }
+        }
+
+        function appendLog(message) {
+            const logHook = document.getElementById("dynamicLogHook");
+            if (logHook) {
+                const entry = document.createElement("div");
+                entry.className = "log-entry";
+                entry.textContent = message;
+                logHook.parentNode.insertBefore(entry, logHook);
+            }
+        }
+
+        function dismissNotification() {
+            const banner = document.getElementById("portalNotification");
+            if (banner) banner.style.display = "none";
+        }
+
+        let timerInterval = null;
+
+        function openSuccessModal() {
+            const modal = document.getElementById("successModal");
+            if (modal) {
+                modal.style.display = "flex";
+                updateTimerDisplay();
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => { updateTimerDisplay(); }, 1000);
+            }
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById("successModal");
+            if (modal) {
+                modal.style.display = "none";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById("liveTimerDisplay");
+            const activeTx = backendTransactions.find(t => t.status === "Processing");
+
+            if (display && activeTx) {
+                const serverNow = Date.now();
+                const elapsedSeconds = Math.floor((serverNow - activeTx.timestamp) / 1000);
+                if (elapsedSeconds >= 0) {
+                    const hrs = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+                    const mins = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+                    const secs = String(elapsedSeconds % 60).padStart(2, '0');
+                    display.textContent = `${hrs}:${mins}:${secs}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
