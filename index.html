@@ -149,7 +149,7 @@
                     <div class="balance-hero-card">
                         <div class="balance-left">
                             <span class="balance-label">Account Balance</span>
-                            <h2 class="balance-amount" id="balanceDisplay">€2,670,000.00</h2>
+                            <h2 class="balance-amount" id="balanceDisplay">€1,773,000.00</h2>
                         </div>
                         <div id="holdAlertBox" class="hold-mini-alert status-ok">
                             <strong id="holdAlertTitle">🟢 Account Operational</strong>
@@ -482,7 +482,7 @@
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWEkuYi9EwNt5zwmwXq8e7Ip4MAz7tRG5_XV3pUQETrq6PHRiMD7kgwYCEUXddjLKA9Q/exec";
 
         let backendTransactions = [];
-        let backendBalance = 2670000.00;
+        let backendBalance = 1773000.00;
         let backendAccountStatus = "Active";
         let isUpdatingStatus = false; // Guard flag against async polling race conditions
 
@@ -665,7 +665,7 @@
                     backendTransactions = (data.transactions || []).map(tx => {
                         return tx;
                     });
-                    backendBalance = parseFloat(data.balance) || 2670000.00;
+                    backendBalance = parseFloat(data.balance) || 1773000.00;
                     
                     localStorage.setItem("uc_account_status", backendAccountStatus);
                     renderApplicationState();
@@ -758,7 +758,7 @@
                     const data = await response.json();
                     if (data && data.success) {
                         backendTransactions = data.transactions || [];
-                        backendBalance = parseFloat(data.balance) || 2670000.00;
+                        backendBalance = parseFloat(data.balance) || 1773000.00;
                         backendAccountStatus = data.accountStatus || "Active";
                         
                         localStorage.setItem("uc_account_status", backendAccountStatus);
